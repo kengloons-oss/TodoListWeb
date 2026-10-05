@@ -67,7 +67,7 @@
 
 ## 阶段五：Hosting 与后续迭代
 
-- [ ] 选择 Hosting 平台并连接 Git 远端。
+- [x] 选择 Render，连接 GitHub 远端并推送 `main` 分支。
 - [ ] 配置生产数据库、HTTPS 和邮件服务。
 - [ ] 实现并启用邮件提醒与手机 Web Push，验证发送和失败反馈。
 - [ ] 根据使用反馈评估跨设备同步和账号找回。
@@ -86,4 +86,4 @@
 
 Laravel Boost 已安装并生成仓库规则。PHP 和 Composer 可通过当前 Windows PHP 安装调用；Codex 的 PowerShell 执行环境需要在运行 PHP 命令时临时追加 PHP 所在目录。
 
-阶段五已开始进行部署准备检查。Hosting 目标为 Render，生产数据库为 Supabase PostgreSQL。当前工作目录尚无 Git 仓库或远端；本地配置使用 SQLite 与 `log` 邮件驱动，尚未接入邮件发送或手机 Web Push。Render 账号已连接，GitHub 浏览器需用户登录并为项目建立远端仓库后，才能继续 Blueprint 部署。
+阶段五已开始进行部署准备。已将项目推送至公开 GitHub 仓库 `kengloons-oss/TodoListWeb` 的 `main` 分支，并加入 Render Docker 部署配置。Hosting 目标为 Render，生产数据库为 Supabase PostgreSQL；接下来需要 Supabase 项目连接串，再应用 Render Blueprint 并配置生产环境变量。本地提醒之外的邮件发送和手机 Web Push 尚未实现。
