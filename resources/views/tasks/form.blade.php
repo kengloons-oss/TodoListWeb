@@ -18,6 +18,11 @@
 
     <div class="grid gap-5 sm:grid-cols-2">
         <div>
+            <label class="mb-2 block text-sm font-medium" for="starts_on">开始日期 <span class="font-normal text-stone-500">（选填）</span></label>
+            <input class="w-full rounded-xl border border-stone-300 bg-white px-3.5 py-3 text-sm outline-none transition focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/15 dark:border-stone-700 dark:bg-stone-950" id="starts_on" name="starts_on" type="date" value="{{ old('starts_on', $task->starts_on?->format('Y-m-d')) }}">
+            @error('starts_on') <p class="mt-2 text-sm text-rose-700 dark:text-rose-300">{{ $message }}</p> @enderror
+        </div>
+        <div>
             <label class="mb-2 block text-sm font-medium" for="priority">优先级</label>
             <select class="w-full rounded-xl border border-stone-300 bg-white px-3.5 py-3 text-sm outline-none transition focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/15 dark:border-stone-700 dark:bg-stone-950" id="priority" name="priority" required>
                 <option value="high" @selected(old('priority', $task->priority ?? 'normal') === 'high')>高</option>

@@ -24,8 +24,10 @@ class TaskFactory extends Factory
             'description' => fake()->optional()->paragraph(),
             'status' => 'pending',
             'priority' => 'normal',
+            'starts_on' => null,
             'due_at' => null,
             'completed_at' => null,
+            'parent_task_id' => null,
         ];
     }
 }

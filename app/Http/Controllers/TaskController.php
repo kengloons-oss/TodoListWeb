@@ -22,7 +22,9 @@ class TaskController extends Controller
             $status = 'pending';
         }
 
-        $tasksQuery = $request->user()->tasks();
+        $tasksQuery = $request->user()->tasks()
+            ->whereNull('parent_task_id')
+            ->with('subtasks');
 
         if ($status !== 'all') {
             $tasksQuery->where('status', $status);
@@ -38,8 +40,14 @@ class TaskController extends Controller
         return view('dashboard', [
             'tasks' => $tasks,
             'status' => $status,
-            'pendingCount' => $request->user()->tasks()->where('status', 'pending')->count(),
-            'completedCount' => $request->user()->tasks()->where('status', 'completed')->count(),
+            'pendingCount' => $request->user()->tasks()
+                ->whereNull('parent_task_id')
+                ->where('status', 'pending')
+                ->count(),
+            'completedCount' => $request->user()->tasks()
+                ->whereNull('parent_task_id')
+                ->where('status', 'completed')
+                ->count(),
         ]);
     }
 
@@ -110,13 +118,31 @@ class TaskController extends Controller
     public function toggleCompletion(Task $task): RedirectResponse
     {
         $this->authorize('update', $task);
+        abort_if($task->parent_task_id !== null, 404);
 
-        $task->update([
-            'status' => $task->status === 'completed' ? 'pending' : 'completed',
-            'completed_at' => $task->status === 'completed' ? null : now(),
-        ]);
+        $status = DB::transaction(function () use ($task): ?string {
+            $task = Task::query()->lockForUpdate()->findOrFail($task->getKey());
+            $nextStatus = $task->status === 'completed' ? 'pending' : 'completed';
 
-        return back()->with('status', $task->status === 'completed' ? '任务已标记完成。' : '任务已重新打开。');
+            if ($nextStatus === 'completed' && $task->subtasks()->whereNotIn('status', ['completed', 'skipped'])->exists()) {
+                return null;
+            }
+
+            $task->update([
+                'status' => $nextStatus,
+                'completed_at' => $nextStatus === 'completed' ? now() : null,
+            ]);
+
+            return $nextStatus;
+        });
+
+        if ($status === null) {
+            return back()->withErrors([
+                'subtasks' => '请先完成或跳过所有子任务，再完成这个任务。',
+            ]);
+        }
+
+        return back()->with('status', $status === 'completed' ? '任务已标记完成。' : '任务已重新打开。');
     }
 
     /**

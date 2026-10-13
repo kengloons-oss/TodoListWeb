@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ReminderController;
+use App\Http\Controllers\SubtaskController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,5 +22,9 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/reminders/due', ReminderController::class)->name('reminders.due');
     Route::patch('/reminders/{reminder}/shown', [ReminderController::class, 'markShown'])->name('reminders.shown');
     Route::patch('/tasks/{task}/completion', [TaskController::class, 'toggleCompletion'])->name('tasks.toggle-completion');
+    Route::post('/tasks/{task}/subtasks', [SubtaskController::class, 'store'])->name('tasks.subtasks.store');
+    Route::patch('/tasks/{task}/subtasks/{subtask}/completion', [SubtaskController::class, 'toggleCompletion'])->name('tasks.subtasks.toggle-completion');
+    Route::patch('/tasks/{task}/subtasks/{subtask}/skip', [SubtaskController::class, 'skip'])->name('tasks.subtasks.skip');
+    Route::patch('/tasks/{task}/subtasks/{subtask}/restore', [SubtaskController::class, 'restore'])->name('tasks.subtasks.restore');
     Route::resource('tasks', TaskController::class)->except('show');
 });

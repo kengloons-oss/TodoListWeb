@@ -9,6 +9,46 @@ document.addEventListener('submit', (event) => {
     }
 });
 
+const skipSubtaskDialog = document.getElementById('skip-subtask-dialog');
+const skipSubtaskForm = document.getElementById('skip-subtask-form');
+const skipSubtaskTitle = document.getElementById('skip-subtask-title');
+const skipSubtaskDecision = document.getElementById('skip-subtask-decision');
+
+if (
+    skipSubtaskDialog instanceof HTMLDialogElement
+    && skipSubtaskForm instanceof HTMLFormElement
+    && skipSubtaskTitle instanceof HTMLElement
+    && skipSubtaskDecision instanceof HTMLInputElement
+) {
+    document.querySelectorAll('[data-open-skip-dialog]').forEach((button) => {
+        button.addEventListener('click', () => {
+            if (!(button instanceof HTMLButtonElement)) {
+                return;
+            }
+
+            skipSubtaskForm.action = button.dataset.skipAction ?? '';
+            skipSubtaskTitle.textContent = button.dataset.skipTitle ?? '';
+            skipSubtaskDecision.value = 'skip';
+            skipSubtaskDialog.showModal();
+        });
+    });
+
+    skipSubtaskDialog.querySelector('[data-cancel-skip]')?.addEventListener('click', () => {
+        skipSubtaskDialog.close();
+    });
+
+    skipSubtaskDialog.querySelectorAll('[data-skip-decision]').forEach((button) => {
+        button.addEventListener('click', () => {
+            if (!(button instanceof HTMLButtonElement)) {
+                return;
+            }
+
+            skipSubtaskDecision.value = button.dataset.skipDecision ?? 'skip';
+            skipSubtaskForm.requestSubmit();
+        });
+    });
+}
+
 const reminderDashboard = document.querySelector('[data-reminder-endpoint]');
 const reminderToastContainer = document.getElementById('reminder-toast-container');
 const seenReminderKeys = new Set();

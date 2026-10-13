@@ -26,6 +26,7 @@ class SaveTaskRequest extends FormRequest
             'title' => ['required', 'string', 'max:160'],
             'description' => ['nullable', 'string', 'max:5000'],
             'priority' => ['required', 'in:low,normal,high'],
+            'starts_on' => ['nullable', 'date'],
             'due_at' => ['nullable', 'date'],
             'remind_at' => ['nullable', 'required_with:reminder_channels', 'date'],
             'reminder_channels' => ['nullable', 'required_with:remind_at', 'array'],
