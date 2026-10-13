@@ -11,6 +11,54 @@ class TaskHierarchyTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_task_creation_form_offers_subtask_inputs(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('tasks.create'));
+
+        $response->assertSee('data-add-subtask', false);
+        $response->assertSee('data-subtask-template', false);
+    }
+
+    public function test_user_can_create_a_main_task_with_subtasks(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)
+            ->post(route('tasks.store'), [
+                'title' => 'Prepare the launch',
+                'priority' => 'high',
+                'subtasks' => [
+                    ['title' => 'Write release notes'],
+                    ['title' => 'Review the checklist'],
+                ],
+            ]);
+
+        $response->assertRedirect(route('tasks.index'));
+        $this->assertDatabaseHas('tasks', [
+            'user_id' => $user->id,
+            'parent_task_id' => null,
+            'title' => 'Prepare the launch',
+            'priority' => 'high',
+        ]);
+
+        $mainTask = Task::query()->where('title', 'Prepare the launch')->firstOrFail();
+
+        $this->assertDatabaseHas('tasks', [
+            'user_id' => $user->id,
+            'parent_task_id' => $mainTask->id,
+            'title' => 'Write release notes',
+            'status' => 'pending',
+        ]);
+        $this->assertDatabaseHas('tasks', [
+            'user_id' => $user->id,
+            'parent_task_id' => $mainTask->id,
+            'title' => 'Review the checklist',
+            'status' => 'pending',
+        ]);
+    }
+
     public function test_user_can_add_a_subtask_to_a_main_task(): void
     {
         $user = User::factory()->create();

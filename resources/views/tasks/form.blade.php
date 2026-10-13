@@ -16,6 +16,41 @@
         @error('description') <p class="mt-2 text-sm text-rose-700 dark:text-rose-300">{{ $message }}</p> @enderror
     </div>
 
+    @if (! $task->exists)
+        <section class="space-y-4 rounded-2xl border border-stone-200 p-4 sm:p-5 dark:border-stone-700" data-subtask-list data-next-index="{{ count(old('subtasks', [])) }}" aria-labelledby="new-subtasks-heading">
+            <div>
+                <h2 class="text-sm font-semibold" id="new-subtasks-heading">子任务 <span class="font-normal text-stone-500">（选填）</span></h2>
+                <p class="mt-1 text-xs text-stone-500 dark:text-stone-400">创建主任务时可以一起添加步骤。</p>
+                @error('subtasks') <p class="mt-2 text-sm text-rose-700 dark:text-rose-300">{{ $message }}</p> @enderror
+            </div>
+
+            <div class="space-y-3" data-subtask-items>
+                @foreach (old('subtasks', []) as $index => $subtask)
+                    <div class="flex items-end gap-2" data-subtask-row>
+                        <div class="min-w-0 flex-1">
+                            <label class="mb-2 block text-xs font-medium" for="subtask-title-{{ $index }}">子任务名称</label>
+                            <input class="w-full rounded-xl border border-stone-300 bg-white px-3.5 py-3 text-sm outline-none transition focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/15 dark:border-stone-700 dark:bg-stone-950" id="subtask-title-{{ $index }}" name="subtasks[{{ $index }}][title]" type="text" value="{{ $subtask['title'] ?? '' }}" maxlength="160" required>
+                            @error('subtasks.'.$index.'.title') <p class="mt-2 text-sm text-rose-700 dark:text-rose-300">{{ $message }}</p> @enderror
+                        </div>
+                        <button class="shrink-0 rounded-xl px-3 py-3 text-sm font-medium text-rose-700 hover:bg-rose-50 dark:text-rose-300 dark:hover:bg-rose-950" type="button" data-remove-subtask>移除</button>
+                    </div>
+                @endforeach
+            </div>
+
+            <button class="rounded-xl border border-emerald-700 px-4 py-2.5 text-sm font-semibold text-emerald-800 transition hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-emerald-950" type="button" data-add-subtask>＋添加子任务</button>
+
+            <template data-subtask-template>
+                <div class="flex items-end gap-2" data-subtask-row>
+                    <div class="min-w-0 flex-1">
+                        <label class="mb-2 block text-xs font-medium" for="subtask-title-__INDEX__">子任务名称</label>
+                        <input class="w-full rounded-xl border border-stone-300 bg-white px-3.5 py-3 text-sm outline-none transition focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/15 dark:border-stone-700 dark:bg-stone-950" id="subtask-title-__INDEX__" name="subtasks[__INDEX__][title]" type="text" maxlength="160" required>
+                    </div>
+                    <button class="shrink-0 rounded-xl px-3 py-3 text-sm font-medium text-rose-700 hover:bg-rose-50 dark:text-rose-300 dark:hover:bg-rose-950" type="button" data-remove-subtask>移除</button>
+                </div>
+            </template>
+        </section>
+    @endif
+
     <div class="grid gap-5 sm:grid-cols-2">
         <div>
             <label class="mb-2 block text-sm font-medium" for="starts_on">开始日期 <span class="font-normal text-stone-500">（选填）</span></label>

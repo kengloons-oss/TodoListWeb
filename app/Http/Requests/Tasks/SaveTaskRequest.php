@@ -22,7 +22,7 @@ class SaveTaskRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'title' => ['required', 'string', 'max:160'],
             'description' => ['nullable', 'string', 'max:5000'],
             'priority' => ['required', 'in:low,normal,high'],
@@ -32,5 +32,13 @@ class SaveTaskRequest extends FormRequest
             'reminder_channels' => ['nullable', 'required_with:remind_at', 'array'],
             'reminder_channels.*' => ['required', 'string', 'distinct', 'in:email,push'],
         ];
+
+        if ($this->routeIs('tasks.store')) {
+            $rules['subtasks'] = ['sometimes', 'array', 'max:50'];
+            $rules['subtasks.*'] = ['array:title'];
+            $rules['subtasks.*.title'] = ['required', 'string', 'max:160'];
+        }
+
+        return $rules;
     }
 }

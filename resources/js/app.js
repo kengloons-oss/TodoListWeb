@@ -9,6 +9,36 @@ document.addEventListener('submit', (event) => {
     }
 });
 
+const newSubtaskList = document.querySelector('[data-subtask-list]');
+
+if (newSubtaskList instanceof HTMLElement) {
+    const subtaskItems = newSubtaskList.querySelector('[data-subtask-items]');
+    const subtaskTemplate = newSubtaskList.querySelector('[data-subtask-template]');
+    const addSubtaskButton = newSubtaskList.querySelector('[data-add-subtask]');
+    let nextSubtaskIndex = Number(newSubtaskList.dataset.nextIndex ?? 0);
+
+    if (
+        subtaskItems instanceof HTMLElement
+        && subtaskTemplate instanceof HTMLTemplateElement
+        && addSubtaskButton instanceof HTMLButtonElement
+    ) {
+        addSubtaskButton.addEventListener('click', () => {
+            const markup = subtaskTemplate.innerHTML.replaceAll('__INDEX__', String(nextSubtaskIndex));
+            subtaskItems.insertAdjacentHTML('beforeend', markup);
+            nextSubtaskIndex += 1;
+            subtaskItems.querySelector<HTMLInputElement>('[data-subtask-row]:last-child input')?.focus();
+        });
+
+        subtaskItems.addEventListener('click', (event) => {
+            const target = event.target;
+
+            if (target instanceof HTMLButtonElement && target.matches('[data-remove-subtask]')) {
+                target.closest('[data-subtask-row]')?.remove();
+            }
+        });
+    }
+}
+
 const skipSubtaskDialog = document.getElementById('skip-subtask-dialog');
 const skipSubtaskForm = document.getElementById('skip-subtask-form');
 const skipSubtaskTitle = document.getElementById('skip-subtask-title');

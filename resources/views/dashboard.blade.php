@@ -51,7 +51,7 @@
                 <div class="mb-5 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-900 dark:bg-rose-950 dark:text-rose-200" role="alert">{{ $errors->first('subtasks') }}</div>
             @endif
 
-            <section class="flex flex-1 flex-col overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-sm shadow-stone-900/[0.03] dark:border-stone-800 dark:bg-stone-900" aria-labelledby="task-list-heading">
+            <section class="flex flex-1 flex-col rounded-3xl border border-stone-200 bg-white shadow-sm shadow-stone-900/[0.03] dark:border-stone-800 dark:bg-stone-900" aria-labelledby="task-list-heading">
                 <div class="flex flex-col gap-4 border-b border-stone-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-7 dark:border-stone-800">
                     <div>
                         <h2 id="task-list-heading" class="font-semibold">所有任务</h2>

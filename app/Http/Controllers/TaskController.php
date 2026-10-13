@@ -67,10 +67,19 @@ class TaskController extends Controller
         $validated = $request->validated();
         $channels = $validated['reminder_channels'] ?? [];
         $remindAt = $validated['remind_at'] ?? null;
-        unset($validated['reminder_channels'], $validated['remind_at']);
+        $subtasks = $validated['subtasks'] ?? [];
+        unset($validated['reminder_channels'], $validated['remind_at'], $validated['subtasks']);
 
-        DB::transaction(function () use ($request, $validated, $channels, $remindAt): void {
+        DB::transaction(function () use ($request, $validated, $channels, $remindAt, $subtasks): void {
             $task = $request->user()->tasks()->create($validated);
+
+            foreach ($subtasks as $subtask) {
+                $request->user()->tasks()->create([
+                    'parent_task_id' => $task->getKey(),
+                    'title' => $subtask['title'],
+                ]);
+            }
+
             $this->syncReminders($task, $channels, $remindAt);
         });
 
