@@ -83,7 +83,7 @@
         <div class="mt-4 flex flex-wrap gap-x-6 gap-y-3">
             <label class="flex items-center gap-2 text-sm text-stone-700 dark:text-stone-300">
                 <input class="rounded border-stone-300 text-emerald-700 focus:ring-emerald-700" name="reminder_channels[]" type="checkbox" value="email" @checked(in_array('email', old('reminder_channels', $reminderChannels), true))>
-                邮件 <span class="text-xs text-stone-500">（Hosting 后启用）</span>
+                邮件 <span class="text-xs text-stone-500">（发送到注册邮箱）</span>
             </label>
             <label class="flex items-center gap-2 text-sm text-stone-700 dark:text-stone-300">
                 <input class="rounded border-stone-300 text-emerald-700 focus:ring-emerald-700" name="reminder_channels[]" type="checkbox" value="push" @checked(in_array('push', old('reminder_channels', $reminderChannels), true))>
@@ -91,7 +91,7 @@
             </label>
         </div>
         @error('reminder_channels') <p class="mt-3 text-sm text-rose-700 dark:text-rose-300">{{ $message }}</p> @enderror
-        <p class="mt-3 text-xs leading-5 text-stone-500 dark:text-stone-400">设置后，应用保持打开时会在提醒时间显示站内提示。邮件和手机推送会在 Hosting 后接入。</p>
+        <p class="mt-3 text-xs leading-5 text-stone-500 dark:text-stone-400">邮件会在提醒时间发送到你的注册邮箱。本地演示时，邮件内容会记录在 storage/logs/laravel.log；手机推送暂时需要 Hosting 后启用。</p>
     </fieldset>
 
     <div class="flex flex-col-reverse gap-3 border-t border-stone-100 pt-5 sm:flex-row sm:justify-end dark:border-stone-800">

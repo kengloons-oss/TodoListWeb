@@ -1,6 +1,15 @@
 $ErrorActionPreference = 'Stop'
 Set-Location -LiteralPath $PSScriptRoot
 
+$gitConfigCount = 0
+if ($env:GIT_CONFIG_COUNT -match '^\d+$') {
+    $gitConfigCount = [int]$env:GIT_CONFIG_COUNT
+}
+
+[Environment]::SetEnvironmentVariable("GIT_CONFIG_KEY_$gitConfigCount", 'safe.directory', 'Process')
+[Environment]::SetEnvironmentVariable("GIT_CONFIG_VALUE_$gitConfigCount", $PSScriptRoot, 'Process')
+$env:GIT_CONFIG_COUNT = [string]($gitConfigCount + 1)
+
 function Stop-WithMessage {
     param([Parameter(Mandatory = $true)][string] $Message)
 
